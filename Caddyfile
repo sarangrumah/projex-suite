@@ -1,0 +1,67 @@
+# ProjeX Suite — Caddy reverse proxy configuration
+# Production: auto-HTTPS with Let's Encrypt
+# Development: use localhost with self-signed certs
+
+{
+	# Global options
+	admin off
+	email admin@projex.id
+}
+
+# Development config (comment out for production)
+:80 {
+	# Security headers
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		X-XSS-Protection "1; mode=block"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' ws: wss:;"
+		-Server
+	}
+
+	# API Gateway
+	handle /api/* {
+		reverse_proxy projex-api:8000
+	}
+
+	# WebSocket collaboration
+	handle /ws/collab/* {
+		reverse_proxy collab-server:8400
+	}
+
+	# Health checks (direct pass-through)
+	handle /health {
+		reverse_proxy projex-api:8000
+	}
+
+	# Frontend SPA (catch-all)
+	handle {
+		reverse_proxy projex-web:3000
+	}
+}
+
+# ─── Production config (uncomment when deploying) ─────────
+# *.projex.id {
+# 	tls {
+# 		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+# 	}
+#
+# 	# Rate limiting: 1000 req/min per IP
+# 	rate_limit {remote.ip} 1000 1m
+#
+# 	@api path /api/*
+# 	handle @api {
+# 		reverse_proxy projex-api:8000
+# 	}
+#
+# 	@collab path /ws/collab/*
+# 	handle @collab {
+# 		reverse_proxy collab-server:8400
+# 	}
+#
+# 	handle {
+# 		reverse_proxy projex-web:3000
+# 	}
+# }

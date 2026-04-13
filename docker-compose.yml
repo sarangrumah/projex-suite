@@ -1,0 +1,454 @@
+version: "3.9"
+
+services:
+  # ─── Reverse Proxy ───────────────────────────────────────
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 50
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    tmpfs:
+      - /tmp:size=50m
+    networks:
+      - frontend
+    depends_on:
+      projex-web:
+        condition: service_healthy
+      projex-api:
+        condition: service_healthy
+
+  # ─── Frontend ────────────────────────────────────────────
+  projex-web:
+    build: ./frontend/projex-web
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 50
+    tmpfs:
+      - /tmp:size=50m
+    networks:
+      - frontend
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:3000"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Main API Gateway ───────────────────────────────────
+  projex-api:
+    build: ./backend/projex-api
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m
+    cpus: 2.0
+    pids_limit: 100
+    tmpfs:
+      - /tmp:size=100m
+    env_file: .env
+    networks:
+      - frontend
+      - backend
+      - db-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Background Worker (Celery) ─────────────────────────
+  projex-worker:
+    build: ./backend/projex-api
+    command: celery -A app.worker worker -l info
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m
+    cpus: 2.0
+    pids_limit: 100
+    tmpfs:
+      - /tmp:size=100m
+    env_file: .env
+    networks:
+      - backend
+      - db-net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # ─── Scheduler (Celery Beat) ─────────────────────────────
+  projex-beat:
+    build: ./backend/projex-api
+    command: celery -A app.worker beat -l info
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 50
+    tmpfs:
+      - /tmp:size=50m
+    env_file: .env
+    networks:
+      - backend
+      - db-net
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  # ─── AI Microservice ─────────────────────────────────────
+  era-ai-api:
+    build: ./backend/era-ai-api
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m
+    cpus: 2.0
+    pids_limit: 100
+    tmpfs:
+      - /tmp:size=100m
+    env_file: .env
+    networks:
+      - backend
+      - ai-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8100/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Budget Microservice ─────────────────────────────────
+  erabudget-api:
+    build: ./backend/erabudget-api
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 50
+    tmpfs:
+      - /tmp:size=50m
+    env_file: .env
+    networks:
+      - backend
+      - db-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8200/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── AppCatalog Microservice ─────────────────────────────
+  appcatalog-api:
+    build: ./backend/appcatalog-api
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 50
+    tmpfs:
+      - /tmp:size=50m
+    env_file: .env
+    networks:
+      - backend
+      - db-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8300/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Collaboration Server (Yjs WebSocket) ───────────────
+  collab-server:
+    build: ./backend/collab-server
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 50
+    tmpfs:
+      - /tmp:size=50m
+    networks:
+      - frontend
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8400/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── WhatsApp Hub Gateway ────────────────────────────────
+  wahub-gateway:
+    build: ./backend/wahub-gateway
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 50
+    tmpfs:
+      - /tmp:size=50m
+    env_file: .env
+    networks:
+      - backend
+      - wa-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8500/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Database ────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    user: "999:999"
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    cap_add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
+    mem_limit: 1g
+    cpus: 2.0
+    pids_limit: 200
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-projex}
+      POSTGRES_USER: ${POSTGRES_USER:-projex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-projex_secret}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - db-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-projex}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Redis ──────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    user: "999:999"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 50
+    command: redis-server --maxmemory 200mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    tmpfs:
+      - /tmp:size=50m
+    networks:
+      - db-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Search Engine ──────────────────────────────────────
+  meilisearch:
+    image: getmeili/meilisearch:v1.12
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 50
+    environment:
+      MEILI_MASTER_KEY: ${MEILISEARCH_API_KEY:-change-me-meili-key}
+      MEILI_ENV: ${ENVIRONMENT:-development}
+    volumes:
+      - meili-data:/meili_data
+    networks:
+      - db-net
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:7700/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Object Storage ─────────────────────────────────────
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 50
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+    volumes:
+      - minio-data:/data
+    networks:
+      - db-net
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Secrets Management ─────────────────────────────────
+  vault:
+    image: hashicorp/vault:1.18
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    cap_add: ["IPC_LOCK"]
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 50
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: ${VAULT_TOKEN:-projex-dev-token}
+      VAULT_DEV_LISTEN_ADDRESS: "0.0.0.0:8200"
+    networks:
+      - db-net
+    healthcheck:
+      test: ["CMD", "vault", "status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── AI Inference ───────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 12g
+    cpus: 4.0
+    pids_limit: 200
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - ai-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Monitoring: Prometheus ─────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    restart: unless-stopped
+    user: "65534:65534"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 50
+    volumes:
+      - prometheus-data:/prometheus
+    tmpfs:
+      - /tmp:size=50m
+    networks:
+      - monitoring
+      - backend
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ─── Monitoring: Grafana ─────────────────────────────────
+  grafana:
+    image: grafana/grafana:11.4.0
+    restart: unless-stopped
+    user: "472:472"
+    read_only: true
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: ["ALL"]
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 50
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - grafana-data:/var/lib/grafana
+    tmpfs:
+      - /tmp:size=50m
+    networks:
+      - monitoring
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+# ─── Networks ──────────────────────────────────────────────
+networks:
+  frontend:
+    driver: bridge
+  backend:
+    driver: bridge
+    internal: true
+  db-net:
+    driver: bridge
+    internal: true
+  ai-net:
+    driver: bridge
+    internal: true
+  wa-net:
+    driver: bridge
+  monitoring:
+    driver: bridge
+    internal: true
+
+# ─── Volumes ──────────────────────────────────────────────
+volumes:
+  caddy-data:
+  caddy-config:
+  pgdata:
+  redis-data:
+  meili-data:
+  minio-data:
+  ollama-data:
+  prometheus-data:
+  grafana-data:

@@ -1,0 +1,108 @@
+version: "3.9"
+
+# Development overrides — use with: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+services:
+  projex-api:
+    build:
+      context: ./backend/projex-api
+      dockerfile: Dockerfile
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    user: "${UID:-1000}:${GID:-1000}"
+    read_only: false
+    volumes:
+      - ./backend/projex-api/app:/app/app
+      - ./backend/projex-api/alembic:/app/alembic
+      - ./backend/projex-api/tests:/app/tests
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=true
+      - DB_ECHO=true
+
+  projex-worker:
+    command: celery -A app.worker worker -l debug --autoreload
+    user: "${UID:-1000}:${GID:-1000}"
+    read_only: false
+    volumes:
+      - ./backend/projex-api/app:/app/app
+
+  era-ai-api:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8100 --reload
+    read_only: false
+    volumes:
+      - ./backend/era-ai-api/app:/app/app
+    ports:
+      - "8100:8100"
+
+  erabudget-api:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8200 --reload
+    read_only: false
+    volumes:
+      - ./backend/erabudget-api/app:/app/app
+    ports:
+      - "8200:8200"
+
+  appcatalog-api:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8300 --reload
+    read_only: false
+    volumes:
+      - ./backend/appcatalog-api/app:/app/app
+    ports:
+      - "8300:8300"
+
+  collab-server:
+    command: node --watch src/index.js
+    read_only: false
+    volumes:
+      - ./backend/collab-server/src:/app/src
+    ports:
+      - "8400:8400"
+
+  wahub-gateway:
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8500 --reload
+    read_only: false
+    volumes:
+      - ./backend/wahub-gateway/app:/app/app
+    ports:
+      - "8500:8500"
+
+  projex-web:
+    build:
+      context: ./frontend/projex-web
+      dockerfile: Dockerfile
+    command: npm run dev -- --host 0.0.0.0
+    read_only: false
+    volumes:
+      - ./frontend/projex-web/src:/app/src
+      - ./frontend/projex-web/index.html:/app/index.html
+    ports:
+      - "5173:5173"
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  redis:
+    ports:
+      - "6379:6379"
+
+  meilisearch:
+    ports:
+      - "7700:7700"
+
+  minio:
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+  vault:
+    ports:
+      - "8200:8200"
+
+  grafana:
+    ports:
+      - "3001:3000"
+
+  prometheus:
+    ports:
+      - "9090:9090"

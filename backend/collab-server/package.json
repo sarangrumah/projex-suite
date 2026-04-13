@@ -1,0 +1,16 @@
+{
+  "name": "projex-collab-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Yjs WebSocket collaboration server for ProjeX Suite",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "y-websocket": "^2.0.4",
+    "yjs": "^13.6.20",
+    "ws": "^8.18.0"
+  }
+}

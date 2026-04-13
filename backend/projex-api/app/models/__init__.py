@@ -3,5 +3,15 @@
 from app.models.tenant import Tenant
 from app.models.user import User
 from app.models.role import Role
+from app.models.space import Space
+from app.models.workflow import Workflow, WorkflowStatus
+from app.models.sprint import Sprint
+from app.models.work_item import WorkItem
+from app.models.comment import Comment
+from app.models.worklog import Worklog
 
-__all__ = ["Tenant", "User", "Role"]
+__all__ = [
+    "Tenant", "User", "Role",
+    "Space", "Workflow", "WorkflowStatus", "Sprint",
+    "WorkItem", "Comment", "Worklog",
+]

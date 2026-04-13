@@ -2,11 +2,14 @@
 
 from fastapi import APIRouter
 
+from app.api.v1.auth import router as auth_router
+
 router = APIRouter()
 
-# Endpoint modules will be included here as they are built:
-# from app.api.v1 import auth, spaces, items, board, workflows
-# router.include_router(auth.router)
+router.include_router(auth_router)
+
+# Future endpoint modules:
+# from app.api.v1 import spaces, items, board, workflows
 # router.include_router(spaces.router)
 # router.include_router(items.router)
 # router.include_router(board.router)

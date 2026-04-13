@@ -12,6 +12,7 @@ from app.core.database import engine
 from app.api.v1 import router as api_v1_router
 from app.middleware.tenant import TenantMiddleware
 from app.middleware.rate_limit import RateLimitMiddleware
+from app.middleware.security_headers import SecurityHeadersMiddleware
 
 
 @asynccontextmanager
@@ -32,6 +33,9 @@ app = FastAPI(
 )
 
 # --- Middleware stack (order matters: last added = first executed) ---
+
+# Security headers
+app.add_middleware(SecurityHeadersMiddleware)
 
 # Rate limiting
 app.add_middleware(RateLimitMiddleware, requests_per_minute=settings.rate_limit_per_minute)

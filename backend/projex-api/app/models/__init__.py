@@ -9,9 +9,11 @@ from app.models.sprint import Sprint
 from app.models.work_item import WorkItem
 from app.models.comment import Comment
 from app.models.worklog import Worklog
+from app.models.audit import AuditEvent
 
 __all__ = [
     "Tenant", "User", "Role",
     "Space", "Workflow", "WorkflowStatus", "Sprint",
     "WorkItem", "Comment", "Worklog",
+    "AuditEvent",
 ]

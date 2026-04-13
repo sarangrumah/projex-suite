@@ -386,6 +386,7 @@ services:
     pids_limit: 50
     volumes:
       - prometheus-data:/prometheus
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     tmpfs:
       - /tmp:size=50m
     networks:

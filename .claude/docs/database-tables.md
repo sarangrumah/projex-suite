@@ -30,7 +30,7 @@
 - `catalog_doc_versions` — SemVerDoc history
 - `catalog_repositories` — GitHub connections
 
-### BudgetPro (3)
+### ERABudget (3)
 - `budgets` — project budgets
 - `budget_line_items` — cost breakdown
 - `invoices` — invoice records

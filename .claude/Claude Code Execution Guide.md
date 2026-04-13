@@ -339,7 +339,7 @@ Network isolation:
 - frontend: caddy, projex-web, projex-api
 - backend (internal: true): all microservices
 - db-net (internal: true): postgres, redis, meilisearch, minio, vault
-- ai-net (internal: true): bima-ai-api, ollama
+- ai-net (internal: true): era-ai-api, ollama
 - monitoring (internal: true): prometheus, grafana
 
 Caddy configuration:

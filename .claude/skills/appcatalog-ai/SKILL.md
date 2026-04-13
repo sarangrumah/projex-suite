@@ -9,7 +9,7 @@ allowed-tools: Read, Write, Edit, Bash, Grep, Glob
 ## Architecture Overview
 
 ```
-GitHub PR Merge → Webhook → AppCatalog Worker → BIMA AI → Draft Update → PO Review → Version Created
+GitHub PR Merge → Webhook → AppCatalog Worker → ERA AI → Draft Update → PO Review → Version Created
 ```
 
 ## GitHub Webhook Handler
@@ -80,8 +80,8 @@ async def process_merged_pr(payload):
     for doc_ref in affected_docs:
         current_content = await get_doc_section(doc_ref)
         
-        # 5. Send to BIMA AI
-        updated_content = await bima_ai.generate_doc_update(
+        # 5. Send to ERA AI
+        updated_content = await era_ai.generate_doc_update(
             current_section=current_content,
             code_diff=diff.patch_for_files(doc_ref.files),
             commit_messages=changes,

@@ -88,9 +88,9 @@ Rule: `internal: true` means no outbound internet access. Only services on the s
 | redis | 256m | 0.5 | 50 |
 | meilisearch | 512m | 1.0 | 50 |
 | minio | 512m | 1.0 | 50 |
-| bima-ai-api | 512m | 2.0 | 100 |
+| era-ai-api | 512m | 2.0 | 100 |
 | ollama | 12g | 4.0 | 200 |
-| budgetpro-api | 256m | 1.0 | 50 |
+| erabudget-api | 256m | 1.0 | 50 |
 | appcatalog-api | 256m | 1.0 | 50 |
 | vault | 256m | 0.5 | 50 |
 | prometheus | 512m | 1.0 | 50 |

@@ -31,8 +31,8 @@ projex-suite/
 │   │   ├── alembic/          # DB migrations
 │   │   ├── tests/            # pytest
 │   │   └── Dockerfile
-│   ├── bima-ai-api/          # AI microservice (port 8100)
-│   ├── budgetpro-api/        # Budget microservice (port 8200)
+│   ├── era-ai-api/          # AI microservice (port 8100)
+│   ├── erabudget-api/        # Budget microservice (port 8200)
 │   ├── appcatalog-api/       # AppCatalog microservice (port 8300)
 │   ├── collab-server/        # Yjs WebSocket (port 8400)
 │   └── wahub-gateway/        # WA-Hub (port 8500)

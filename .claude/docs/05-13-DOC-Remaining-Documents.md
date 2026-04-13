@@ -32,7 +32,7 @@ Internet → Cloudflare (DNS + DDoS) → VPS:443 → Caddy → Docker services
 | frontend | bridge | External-facing via Caddy | caddy, projex-web, projex-api |
 | backend | internal | Service-to-service | All microservices |
 | db-net | internal | Database tier (no external) | postgres, redis, meilisearch, minio, vault |
-| ai-net | internal | AI inference | bima-ai-api, ollama |
+| ai-net | internal | AI inference | era-ai-api, ollama |
 | wa-net | bridge (outbound only) | WhatsApp API | wahub-gateway, wahub-worker |
 | monitoring | internal | Observability | prometheus, grafana, loki |
 
@@ -82,7 +82,7 @@ catalog_products ──1:N──▶ catalog_repositories
 catalog_documents ──1:N──▶ catalog_doc_versions
 ```
 
-### 1.3 BudgetPro Entities (3 tables per tenant)
+### 1.3 ERABudget Entities (3 tables per tenant)
 ```
 spaces ──1:1──▶ budgets
 budgets ──1:N──▶ budget_line_items
@@ -164,17 +164,17 @@ audit.events (append-only, hash-chained, cross-tenant)
 | POST | /timesheet/entries | Timesheet | Log entries |
 | POST | /timesheet/submit | Timesheet | Submit approval |
 | POST | /timesheet/{id}/approve | Timesheet | Approve |
-| POST | /ai/chat | BIMA AI | Chat message |
-| POST | /ai/query | BIMA AI | Text-to-SQL |
-| GET | /ai/suggestions | BIMA AI | Proactive alerts |
+| POST | /ai/chat | ERA AI | Chat message |
+| POST | /ai/query | ERA AI | Text-to-SQL |
+| GET | /ai/suggestions | ERA AI | Proactive alerts |
 | POST | /catalog/products | AppCatalog | Register product |
 | GET | /catalog/products | AppCatalog | List products |
 | POST | /catalog/documents | AppCatalog | Create document |
 | GET | /catalog/documents/{id}/versions | AppCatalog | Version history |
 | POST | /catalog/webhooks/github | AppCatalog | GitHub webhook |
-| POST | /budgets | BudgetPro | Create budget |
-| GET | /budgets/{id}/report | BudgetPro | Budget report |
-| POST | /invoices | BudgetPro | Generate invoice |
+| POST | /budgets | ERABudget | Create budget |
+| GET | /budgets/{id}/report | ERABudget | Budget report |
+| POST | /invoices | ERABudget | Generate invoice |
 | POST | /wahub/send | WA-Hub | Send message |
 | POST | /wahub/templates | WA-Hub | Create template |
 | GET | /dashboards/{id} | Dashboards | Dashboard data |
@@ -247,7 +247,7 @@ audit.events (append-only, hash-chained, cross-tenant)
 | E2E Tests | Full user journeys | Playwright | 20 critical scenarios |
 | Security Tests | Vulnerability scanning | Trivy, OWASP ZAP, custom | Zero critical/high |
 | Performance Tests | Load testing | Locust | p95 < 500ms at 100 concurrent |
-| AI Tests | BIMA AI responses | Custom eval framework | 80% accuracy on worklog parsing |
+| AI Tests | ERA AI responses | Custom eval framework | 80% accuracy on worklog parsing |
 
 ## 2. Critical Test Scenarios (E2E)
 
@@ -256,10 +256,10 @@ audit.events (append-only, hash-chained, cross-tenant)
 | E2E-01 | Register → Login → Create Space → Create Items → Board drag-drop | Auth, Spaces, Items, Board |
 | E2E-02 | Sprint create → Planning → Start → Burndown → Close | Sprints, Reports |
 | E2E-03 | Timesheet: Timer → Quick log → Submit → Approve | Timesheet |
-| E2E-04 | AI: "Log 2h intercompany" → Confirm → Verify worklog created | BIMA AI, Timesheet |
+| E2E-04 | AI: "Log 2h intercompany" → Confirm → Verify worklog created | ERA AI, Timesheet |
 | E2E-05 | AppCatalog: Create product → Create BRD → Edit → Version history | AppCatalog |
-| E2E-06 | GitHub webhook → AI doc update → PO review → Approve | AppCatalog, BIMA AI |
-| E2E-07 | Budget create → Timesheet → Invoice generate → e-Faktur | BudgetPro |
+| E2E-06 | GitHub webhook → AI doc update → PO review → Approve | AppCatalog, ERA AI |
+| E2E-07 | Budget create → Timesheet → Invoice generate → e-Faktur | ERABudget |
 | E2E-08 | WA-Hub: Sprint alert trigger → WA message delivered | WA-Hub |
 | E2E-09 | Multi-tenant: Tenant A cannot see Tenant B data | Security |
 | E2E-10 | Brute force: 10 failed logins → account lockout → CAPTCHA | Security |
@@ -340,12 +340,12 @@ Push → Lint → Unit Tests → Build → Trivy Scan → Integration Tests
 | 1. Foundation | Apr 21, 2026 | Jun 13, 2026 | 8 weeks | Ade + 1 contract | None |
 | 2. Agile Core | Jun 16 | Jul 25 | 6 weeks | Ade + 1 contract | Phase 1 |
 | 3. Timesheet | Jul 28 | Aug 21 | 4 weeks | Ade | Phase 1 |
-| 4. BIMA AI | Aug 24 | Sep 18 | 4 weeks | Ade | Phase 1 + Ollama setup |
+| 4. ERA AI | Aug 24 | Sep 18 | 4 weeks | Ade | Phase 1 + Ollama setup |
 | 5. Views | Sep 21 | Oct 16 | 4 weeks | Ade + 1 frontend | Phase 2 |
 | 6. Dashboards | Oct 19 | Nov 6 | 3 weeks | Ade | Phase 2 + 3 |
 | 7. Docs/Wiki | Nov 9 | Nov 27 | 3 weeks | Ade | Phase 1 |
 | 8. AppCatalog | Dec 1 | Jan 2, 2027 | 5 weeks | Ade + 1 contract | Phase 4 + 7 |
-| 9. BudgetPro | Jan 5 | Jan 30 | 4 weeks | Ade | Phase 3 |
+| 9. ERABudget | Jan 5 | Jan 30 | 4 weeks | Ade | Phase 3 |
 | 10. WA-Hub | Feb 2 | Feb 20 | 3 weeks | Ade | Existing wahub codebase |
 | 11. SaaS | Feb 23 | Mar 20 | 4 weeks | Ade + 1 contract | Phase 1-10 |
 
@@ -410,7 +410,7 @@ Push → Lint → Unit Tests → Build → Trivy Scan → Integration Tests
 | BR-043 (PQL Search) | UC-009 | PQL parser → SQL | work_items | GET /spaces/{key}/items?pql= | Unit-PQL-01 |
 | BR-071 (Timesheet Grid) | UC-010 | worklogs table | worklogs | GET /timesheet | E2E-03 |
 | BR-074 (Timesheet Approval) | UC-011 | worklogs.approval_status | worklogs | POST /timesheet/approve | E2E-03 |
-| BR-098 (AI Worklog) | UC-015 | bima-ai-api + Ollama | worklogs | POST /ai/chat | E2E-04 |
+| BR-098 (AI Worklog) | UC-015 | era-ai-api + Ollama | worklogs | POST /ai/chat | E2E-04 |
 | BR-104 (AI Doc Update) | UC-017 | appcatalog-worker + AI | catalog_doc_versions | POST /catalog/webhooks/github | E2E-06 |
 | BR-108 (Budget) | UC-018 | budgets table | budgets | POST /budgets | E2E-07 |
 | BR-111 (Invoice) | UC-019 | invoices table | invoices | POST /invoices | E2E-07 |

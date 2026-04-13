@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(cd *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git add*)",
+      "Bash(git commit*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(pytest*)",
+      "Bash(npx vitest*)",
+      "Bash(npx tsc*)",
+      "Bash(ruff*)",
+      "Bash(npx eslint*)",
+      "Bash(alembic*)",
+      "Bash(uvicorn*)",
+      "Bash(npm run*)",
+      "Bash(npm install*)",
+      "Bash(pip install*)",
+      "Bash(docker compose*)",
+      "Bash(docker ps*)",
+      "Bash(docker logs*)",
+      "Bash(docker build*)",
+      "Bash(git push*)",
+      "Bash(git merge*)",
+      "Bash(git stash*)",
+      "Bash(git remote*)",
+      "Bash(npm run build*)",
+      "Bash(python*)",
+      "Bash(python3*)",
+      "Bash(gh *)",
+      "Read",
+      "Write",
+      "Edit",
+      "Glob",
+      "Grep"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(docker system prune*)",
+      "Bash(sudo rm*)"
+    ]
+  },
+  "env": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1"
+  }
+}

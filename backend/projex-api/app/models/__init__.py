@@ -15,6 +15,7 @@ from app.models.wiki import WikiPage, WikiPageVersion
 from app.models.budget import Budget, BudgetLineItem, Invoice
 from app.models.goal import Goal, KeyResult
 from app.models.dashboard import Dashboard, DashboardWidget
+from app.models.catalog import CatalogProduct, CatalogDocument, CatalogDocVersion, CatalogRepository
 
 __all__ = [
     "Tenant", "User", "Role",
@@ -25,4 +26,5 @@ __all__ = [
     "Budget", "BudgetLineItem", "Invoice",
     "Goal", "KeyResult",
     "Dashboard", "DashboardWidget",
+    "CatalogProduct", "CatalogDocument", "CatalogDocVersion", "CatalogRepository",
 ]

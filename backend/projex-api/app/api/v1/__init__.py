@@ -12,6 +12,7 @@ from app.api.v1.wiki import router as wiki_router
 from app.api.v1.budgets import router as budgets_router
 from app.api.v1.goals import router as goals_router
 from app.api.v1.dashboards import router as dashboards_router
+from app.api.v1.catalog import router as catalog_router
 
 router = APIRouter()
 
@@ -25,3 +26,4 @@ router.include_router(wiki_router)
 router.include_router(budgets_router)
 router.include_router(goals_router)
 router.include_router(dashboards_router)
+router.include_router(catalog_router)

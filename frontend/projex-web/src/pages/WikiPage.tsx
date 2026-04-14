@@ -67,18 +67,9 @@ export default function WikiPage() {
 
   const updateMutation = useMutation({
     mutationFn: async () => {
-      let bodyJson: Record<string, unknown>;
-      try {
-        bodyJson = JSON.parse(editBody);
-      } catch {
-        bodyJson = {
-          type: "doc",
-          content: [{ type: "paragraph", text: editBody }],
-        };
-      }
       const res = await api.put(`/wiki/${selectedId}`, {
         title: editTitle,
-        body: bodyJson,
+        body: toTipTapJson(editBody),
       });
       return res.data.data;
     },
@@ -89,21 +80,29 @@ export default function WikiPage() {
     },
   });
 
-  const startEdit = () => {
-    if (detail) {
-      setEditTitle(detail.title);
-      setEditBody(JSON.stringify(detail.body, null, 2));
-      setEditing(true);
-    }
-  };
-
-  const bodyText = (body: Record<string, unknown>): string => {
+  const toPlainText = (body: Record<string, unknown>): string => {
     if (!body) return "";
     const content = body.content as Array<{ text?: string; content?: Array<{ text?: string }> }> | undefined;
-    if (!content) return JSON.stringify(body);
+    if (!content) return "";
     return content
       .map((block) => block.text || (block.content?.map((c) => c.text || "").join("")) || "")
       .join("\n");
+  };
+
+  const toTipTapJson = (text: string): Record<string, unknown> => ({
+    type: "doc",
+    content: text.split("\n").map((line) => ({
+      type: "paragraph",
+      ...(line ? { content: [{ type: "text", text: line }] } : {}),
+    })),
+  });
+
+  const startEdit = () => {
+    if (detail) {
+      setEditTitle(detail.title);
+      setEditBody(toPlainText(detail.body));
+      setEditing(true);
+    }
   };
 
   return (
@@ -205,7 +204,7 @@ export default function WikiPage() {
               </button>
             </div>
             <div className="prose prose-sm max-w-none text-text-secondary whitespace-pre-wrap">
-              {bodyText(detail.body)}
+              {toPlainText(detail.body)}
             </div>
             <div className="mt-6 text-xs text-text-muted">
               Last updated: {new Date(detail.updated_at).toLocaleString()}
@@ -225,7 +224,7 @@ export default function WikiPage() {
               value={editBody}
               onChange={(e) => setEditBody(e.target.value)}
               rows={20}
-              className="w-full rounded-md border border-slate-200 p-3 text-sm font-mono text-text-secondary focus:ring-2 focus:ring-brand-sky outline-none"
+              className="w-full rounded-md border border-slate-200 p-3 text-sm text-text-secondary focus:ring-2 focus:ring-brand-sky outline-none"
             />
             <div className="flex gap-2">
               <button

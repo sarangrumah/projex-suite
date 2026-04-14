@@ -21,6 +21,8 @@ from app.api.v1.system import router as system_router
 from app.api.v1.files import router as files_router
 from app.api.v1.links import router as links_router
 from app.api.v1.era_ai import router as era_ai_router
+from app.api.v1.tenants import router as tenants_router
+from app.api.v1.automations import router as automations_router
 
 router = APIRouter()
 
@@ -43,3 +45,5 @@ router.include_router(system_router)
 router.include_router(files_router)
 router.include_router(links_router)
 router.include_router(era_ai_router)
+router.include_router(tenants_router)
+router.include_router(automations_router)

@@ -90,6 +90,23 @@ Deliverables:
 8. Docker Compose (all 18 services with network isolation)
 9. Security baseline (TLS, encryption, headers, rate limiting)
 
+## Phase 2 — Features (Complete)
+10. Wiki (per-space docs with version history)
+11. ERABudget (budgets, line items, invoices with PPN 11%)
+12. AppCatalog (GitHub webhook → AI doc pipeline, Ollama + Claude)
+13. Goals/OKR (auto-progress from key results)
+14. Dashboards (5 widget types, live SQL aggregation)
+15. ERA AI Assistant (animated avatar, floating chat, context-aware)
+16. Notifications (bell + dropdown, mark read)
+17. Search (full-text, Meilisearch-ready)
+18. Sprints (create/start/close lifecycle, backlog)
+19. User Admin (role editing, deactivate)
+20. File Attachments (MinIO upload, type whitelist)
+21. Work Item Links (blocks/relates_to/duplicates)
+22. Automations (when-trigger rules per space)
+23. SaaS Billing (plans, subscriptions, tenant provisioning)
+24. WA-Hub (WhatsApp) — deferred, to configure later
+
 ## Testing
 - Run single test: `pytest tests/test_auth.py -x -v`
 - Run with coverage: `pytest --cov=app --cov-report=term-missing`

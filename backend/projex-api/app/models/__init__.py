@@ -19,6 +19,8 @@ from app.models.catalog import CatalogProduct, CatalogDocument, CatalogDocVersio
 from app.models.notification import Notification
 from app.models.file import File
 from app.models.work_item_link import WorkItemLink
+from app.models.plan import Plan, Subscription, Billing, SystemConfig
+from app.models.automation import Automation
 
 __all__ = [
     "Tenant", "User", "Role",
@@ -32,4 +34,6 @@ __all__ = [
     "CatalogProduct", "CatalogDocument", "CatalogDocVersion", "CatalogRepository",
     "Notification",
     "File", "WorkItemLink",
+    "Plan", "Subscription", "Billing", "SystemConfig",
+    "Automation",
 ]

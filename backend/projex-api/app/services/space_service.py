@@ -1,5 +1,7 @@
 """Space service — business logic for space CRUD + template initialization."""
 
+from __future__ import annotations
+
 import re
 from uuid import UUID
 

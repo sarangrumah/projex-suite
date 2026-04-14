@@ -71,4 +71,4 @@ def require_permission(permission: str):
             )
         return current_user
 
-    return Depends(_check)
+    return _check

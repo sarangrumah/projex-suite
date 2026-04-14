@@ -1,5 +1,7 @@
 """Item service — business logic for work items, comments, worklogs."""
 
+from __future__ import annotations
+
 from datetime import datetime, timezone
 from uuid import UUID
 

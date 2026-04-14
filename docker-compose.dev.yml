@@ -68,13 +68,25 @@ services:
     build:
       context: ./frontend/projex-web
       dockerfile: Dockerfile
-    command: npm run dev -- --host 0.0.0.0
+      target: builder
+    user: root
+    command: npm run dev -- --host 0.0.0.0 --port 3000
     read_only: false
     volumes:
       - ./frontend/projex-web/src:/app/src
       - ./frontend/projex-web/index.html:/app/index.html
+      - ./frontend/projex-web/vite.config.ts:/app/vite.config.ts
+      - ./frontend/projex-web/tailwind.config.js:/app/tailwind.config.js
+      - ./frontend/projex-web/postcss.config.js:/app/postcss.config.js
+      - ./frontend/projex-web/tsconfig.json:/app/tsconfig.json
     ports:
-      - "5173:5173"
+      - "5173:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O-", "http://localhost:3000"]
+      interval: 10s
+      timeout: 5s
+      start_period: 30s
+      retries: 5
 
   postgres:
     ports:

@@ -1,6 +1,7 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, Outlet } from "react-router-dom";
 import { lazy, Suspense, useEffect } from "react";
 import { Sidebar } from "@/components/Sidebar";
+import { SpaceTabs } from "@/components/SpaceTabs";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuthStore } from "@/stores/authStore";
 
@@ -19,6 +20,15 @@ function Spinner() {
   );
 }
 
+function SpaceLayout() {
+  return (
+    <ProtectedRoute>
+      <SpaceTabs />
+      <Outlet />
+    </ProtectedRoute>
+  );
+}
+
 const authPages = ["/login", "/register"];
 
 export function App() {
@@ -33,7 +43,6 @@ export function App() {
     }
   }, [isAuthenticated, fetchMe]);
 
-  // Auth pages render without sidebar
   if (isAuthPage) {
     return (
       <Suspense fallback={<Spinner />}>
@@ -48,7 +57,7 @@ export function App() {
   return (
     <div className="flex h-screen bg-surface-secondary">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto">
+      <main className="flex-1 overflow-y-auto flex flex-col">
         <Suspense fallback={<Spinner />}>
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -60,22 +69,10 @@ export function App() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/spaces/:spaceKey/board"
-              element={
-                <ProtectedRoute>
-                  <BoardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/spaces/:spaceKey/wiki"
-              element={
-                <ProtectedRoute>
-                  <WikiPage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/spaces/:spaceKey" element={<SpaceLayout />}>
+              <Route path="board" element={<BoardPage />} />
+              <Route path="wiki" element={<WikiPage />} />
+            </Route>
           </Routes>
         </Suspense>
       </main>

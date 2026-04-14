@@ -13,6 +13,7 @@ from app.models.audit import AuditEvent
 from app.models.custom_field import CustomFieldDefinition
 from app.models.wiki import WikiPage, WikiPageVersion
 from app.models.budget import Budget, BudgetLineItem, Invoice
+from app.models.goal import Goal, KeyResult
 
 __all__ = [
     "Tenant", "User", "Role",
@@ -21,4 +22,5 @@ __all__ = [
     "AuditEvent", "CustomFieldDefinition",
     "WikiPage", "WikiPageVersion",
     "Budget", "BudgetLineItem", "Invoice",
+    "Goal", "KeyResult",
 ]

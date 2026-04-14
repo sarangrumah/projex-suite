@@ -8,6 +8,7 @@ export function SpaceTabs() {
     { path: `/spaces/${spaceKey}/board`, label: "Board" },
     { path: `/spaces/${spaceKey}/wiki`, label: "Wiki" },
     { path: `/spaces/${spaceKey}/budget`, label: "Budget" },
+    { path: `/spaces/${spaceKey}/goals`, label: "Goals" },
   ];
 
   return (

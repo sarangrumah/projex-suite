@@ -3,10 +3,7 @@ services:
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
-    user: "1000:1000"
-    read_only: true
     security_opt: ["no-new-privileges:true"]
-    cap_drop: ["ALL"]
     mem_limit: 256m
     cpus: 1.0
     pids_limit: 50
@@ -241,10 +238,7 @@ services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
-    user: "999:999"
     security_opt: ["no-new-privileges:true"]
-    cap_drop: ["ALL"]
-    cap_add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETGID", "SETUID"]
     mem_limit: 1g
     cpus: 2.0
     pids_limit: 200
@@ -266,10 +260,7 @@ services:
   redis:
     image: redis:7-alpine
     restart: unless-stopped
-    user: "999:999"
-    read_only: true
     security_opt: ["no-new-privileges:true"]
-    cap_drop: ["ALL"]
     mem_limit: 256m
     cpus: 0.5
     pids_limit: 50
@@ -337,7 +328,7 @@ services:
     restart: unless-stopped
     security_opt: ["no-new-privileges:true"]
     cap_drop: ["ALL"]
-    cap_add: ["IPC_LOCK"]
+    cap_add: ["IPC_LOCK", "SETFCAP"]
     mem_limit: 256m
     cpus: 0.5
     pids_limit: 50

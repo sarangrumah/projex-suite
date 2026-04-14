@@ -1,5 +1,4 @@
-import { useSortable } from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+import { useDraggable } from "@dnd-kit/core";
 import { useBoardStore } from "@/stores/boardStore";
 import type { BoardItem } from "@/types/board";
 
@@ -26,20 +25,19 @@ interface CardProps {
 export function Card({ item }: CardProps) {
   const selectItem = useBoardStore((s) => s.selectItem);
 
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({ id: item.id, data: { item } });
+  const { attributes, listeners, setNodeRef, transform, isDragging } =
+    useDraggable({
+      id: item.id,
+      data: { item },
+    });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  };
+  const style = transform
+    ? {
+        transform: `translate(${transform.x}px, ${transform.y}px)`,
+        opacity: isDragging ? 0.5 : 1,
+        zIndex: isDragging ? 50 : undefined,
+      }
+    : undefined;
 
   return (
     <div
@@ -47,7 +45,9 @@ export function Card({ item }: CardProps) {
       style={style}
       {...attributes}
       {...listeners}
-      onClick={() => selectItem(item.key)}
+      onClick={() => {
+        if (!isDragging) selectItem(item.key);
+      }}
       className="rounded-md border border-slate-200 bg-white p-3 shadow-sm cursor-grab active:cursor-grabbing
                  hover:border-brand-sky hover:shadow-md transition-all"
       role="button"

@@ -1,8 +1,4 @@
 import { useDroppable } from "@dnd-kit/core";
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
 import { Card } from "./Card";
 import type { BoardColumn } from "@/types/board";
 
@@ -12,7 +8,7 @@ interface ColumnProps {
 
 export function Column({ column }: ColumnProps) {
   const { setNodeRef, isOver } = useDroppable({
-    id: column.status.id,
+    id: `column-${column.status.id}`,
     data: { statusId: column.status.id },
   });
 
@@ -48,18 +44,13 @@ export function Column({ column }: ColumnProps) {
       </div>
       <div
         ref={setNodeRef}
-        className={`flex flex-col gap-2 flex-1 min-h-[4rem] rounded-md transition-colors ${
+        className={`flex flex-col gap-2 flex-1 min-h-[4rem] rounded-md p-1 transition-colors ${
           isOver ? "bg-brand-sky/10 ring-2 ring-brand-sky/30" : ""
         }`}
       >
-        <SortableContext
-          items={column.items.map((i) => i.id)}
-          strategy={verticalListSortingStrategy}
-        >
-          {column.items.map((item) => (
-            <Card key={item.id} item={item} />
-          ))}
-        </SortableContext>
+        {column.items.map((item) => (
+          <Card key={item.id} item={item} />
+        ))}
       </div>
     </div>
   );

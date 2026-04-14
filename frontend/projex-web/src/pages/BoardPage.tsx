@@ -6,6 +6,7 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
+  closestCorners,
 } from "@dnd-kit/core";
 import { useState } from "react";
 import { useBoard, useMoveItem } from "@/hooks/useBoard";
@@ -46,9 +47,16 @@ export default function BoardPage() {
     const item = active.data.current?.item as BoardItem | undefined;
     if (!item) return;
 
-    // Determine target status — could be a column or another card
+    // The droppable column sets data.statusId
     const targetStatusId = over.data.current?.statusId as string | undefined;
     if (!targetStatusId) return;
+
+    // Find which column the item is currently in
+    const currentCol = columns.find((c) =>
+      c.items.some((i) => i.id === item.id),
+    );
+    // Skip if dropping in the same column
+    if (currentCol && currentCol.status.id === targetStatusId) return;
 
     moveItemMutation.mutate({
       itemKey: item.key,
@@ -131,6 +139,7 @@ export default function BoardPage() {
       {/* Board */}
       <DndContext
         sensors={sensors}
+        collisionDetection={closestCorners}
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
       >

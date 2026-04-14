@@ -70,6 +70,8 @@ services:
       dockerfile: Dockerfile
       target: builder
     user: root
+    environment:
+      - VITE_API_PROXY_TARGET=http://projex-api:8000
     command: npm run dev -- --host 0.0.0.0 --port 3000
     read_only: false
     volumes:

@@ -13,6 +13,7 @@ import { useBoardStore } from "@/stores/boardStore";
 import { Column } from "@/components/Board/Column";
 import { Card } from "@/components/Board/Card";
 import { QuickFilters } from "@/components/Board/QuickFilters";
+import { CreateItemModal } from "@/components/CreateItemModal";
 import { SwimlaneSwitcher } from "@/components/Board/SwimlaneSwitcher";
 import { DetailPanel } from "@/components/ItemDetail/DetailPanel";
 import type { BoardItem } from "@/types/board";
@@ -26,6 +27,7 @@ export default function BoardPage() {
   const selectedItemKey = useBoardStore((s) => s.selectedItemKey);
 
   const [activeItem, setActiveItem] = useState<BoardItem | null>(null);
+  const [showCreateItem, setShowCreateItem] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -106,8 +108,22 @@ export default function BoardPage() {
         <h1 className="text-2xl font-bold text-text-primary">
           {spaceKey} Board
         </h1>
-        <SwimlaneSwitcher />
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowCreateItem(true)}
+            className="inline-flex items-center gap-2 rounded-md bg-brand-blue px-4 py-2 text-sm font-medium text-white hover:bg-brand-blue/90 transition-colors"
+          >
+            + Create Item
+          </button>
+          <SwimlaneSwitcher />
+        </div>
       </header>
+
+      <CreateItemModal
+        open={showCreateItem}
+        onClose={() => setShowCreateItem(false)}
+        spaceKey={spaceKey!}
+      />
 
       {/* Quick filters */}
       {data?.quick_filters && <QuickFilters filters={data.quick_filters} />}

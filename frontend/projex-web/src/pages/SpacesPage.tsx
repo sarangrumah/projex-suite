@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { api } from "@/services/api";
+import { CreateSpaceModal } from "@/components/CreateSpaceModal";
 
 interface SpaceItem {
   id: string;
@@ -13,6 +15,7 @@ interface SpaceItem {
 }
 
 export default function SpacesPage() {
+  const [showCreate, setShowCreate] = useState(false);
   const { data, isLoading, error } = useQuery({
     queryKey: ["spaces"],
     queryFn: async () => {
@@ -25,7 +28,15 @@ export default function SpacesPage() {
     <div className="p-6">
       <header className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-text-primary">Spaces</h1>
+        <button
+          onClick={() => setShowCreate(true)}
+          className="inline-flex items-center gap-2 rounded-md bg-brand-blue px-4 py-2 text-sm font-medium text-white hover:bg-brand-blue/90 focus:ring-2 focus:ring-brand-sky focus:ring-offset-2 transition-colors"
+        >
+          + Create Space
+        </button>
       </header>
+
+      <CreateSpaceModal open={showCreate} onClose={() => setShowCreate(false)} />
 
       {isLoading && (
         <div className="flex items-center justify-center h-32">

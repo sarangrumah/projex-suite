@@ -63,6 +63,7 @@ services:
       - frontend
       - backend
       - db-net
+      - ai-net
     depends_on:
       postgres:
         condition: service_healthy

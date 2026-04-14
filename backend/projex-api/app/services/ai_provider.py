@@ -182,5 +182,5 @@ def get_ai_provider() -> AIProvider:
         return ClaudeProvider()
     return OllamaProvider(
         base_url=os.environ.get("OLLAMA_URL", "http://ollama:11434"),
-        model=os.environ.get("OLLAMA_MODEL", "llama3.1:8b"),
+        model=os.environ.get("OLLAMA_MODEL", "smollm2:135m"),
     )

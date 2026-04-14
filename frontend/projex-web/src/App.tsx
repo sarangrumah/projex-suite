@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/Sidebar";
 import { SpaceTabs } from "@/components/SpaceTabs";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { useAuthStore } from "@/stores/authStore";
+import { EraChatWidget } from "@/components/EraChatWidget";
 
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const SpacesPage = lazy(() => import("@/pages/SpacesPage"));
@@ -93,6 +94,7 @@ export function App() {
           </Routes>
         </Suspense>
       </main>
+      <EraChatWidget />
     </div>
   );
 }

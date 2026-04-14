@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { useAuthStore } from "@/stores/authStore";
@@ -12,7 +12,10 @@ interface Message {
 }
 
 export function EraChatWidget() {
-  const { spaceKey } = useParams<{ spaceKey: string }>();
+  // Extract spaceKey from URL path regardless of route nesting
+  const location = useLocation();
+  const match = location.pathname.match(/\/spaces\/([^/]+)/);
+  const spaceKey = match ? match[1] : undefined;
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");

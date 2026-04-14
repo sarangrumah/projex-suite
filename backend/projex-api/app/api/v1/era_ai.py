@@ -45,6 +45,13 @@ async def chat(
         result = await db.execute(select(Space).where(Space.key == request.space_key.upper()))
         space = result.scalar_one_or_none()
 
+    # Auto-detect space if not provided — use the most recent active space
+    if not space:
+        result = await db.execute(
+            select(Space).where(Space.status == "active").order_by(Space.created_at.desc()).limit(1)
+        )
+        space = result.scalar_one_or_none()
+
     # Intent detection → data query → formatted response
     reply, suggestions = await _handle_intent(db, msg, request.message, space, current_user)
 

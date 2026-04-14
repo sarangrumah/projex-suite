@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { Sidebar } from "@/components/Sidebar";
 
+const HomePage = lazy(() => import("@/pages/HomePage"));
+const SpacesPage = lazy(() => import("@/pages/SpacesPage"));
 const BoardPage = lazy(() => import("@/pages/BoardPage"));
 
 function Spinner() {
@@ -13,30 +16,17 @@ function Spinner() {
 
 export function App() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          <div className="flex h-screen items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-2xl font-bold text-brand-navy">
-                ProjeX Suite
-              </h1>
-              <p className="mt-2 text-text-muted">
-                Project Management for Indonesian SME Teams
-              </p>
-            </div>
-          </div>
-        }
-      />
-      <Route
-        path="/spaces/:spaceKey/board"
-        element={
-          <Suspense fallback={<Spinner />}>
-            <BoardPage />
-          </Suspense>
-        }
-      />
-    </Routes>
+    <div className="flex h-screen bg-surface-secondary">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto">
+        <Suspense fallback={<Spinner />}>
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/spaces" element={<SpacesPage />} />
+            <Route path="/spaces/:spaceKey/board" element={<BoardPage />} />
+          </Routes>
+        </Suspense>
+      </main>
+    </div>
   );
 }

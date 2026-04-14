@@ -4,6 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { useAuthStore } from "@/stores/authStore";
 import { EraAvatar } from "./EraAvatar";
+import { EraPet } from "./EraPet";
 
 interface Message {
   role: "user" | "era";
@@ -12,7 +13,6 @@ interface Message {
 }
 
 export function EraChatWidget() {
-  // Extract spaceKey from URL path regardless of route nesting
   const location = useLocation();
   const match = location.pathname.match(/\/spaces\/([^/]+)/);
   const spaceKey = match ? match[1] : undefined;
@@ -20,18 +20,16 @@ export function EraChatWidget() {
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState<Message[]>([
-    { role: "era", text: "Hi! I'm ERA, your AI project assistant. How can I help?", suggestions: ["Project overview", "My tasks", "Help"] },
+    { role: "era", text: "Hi! I'm ERA, your AI project assistant. How can I help?", suggestions: ["Project status", "Show all items", "Help"] },
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll on new messages
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
 
-  // Proactive suggestions
   const { data: suggestionsData } = useQuery({
     queryKey: ["era-suggestions", spaceKey],
     queryFn: async () => {
@@ -56,7 +54,7 @@ export function EraChatWidget() {
     onError: () => {
       setMessages((prev) => [
         ...prev,
-        { role: "era", text: "Sorry, I couldn't process that. The AI service might be offline. Try again later." },
+        { role: "era", text: "Sorry, I couldn't process that. Try again." },
       ]);
     },
   });
@@ -73,22 +71,13 @@ export function EraChatWidget() {
 
   return (
     <>
-      {/* Floating button */}
-      {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-40 group"
-          aria-label="Open ERA AI assistant"
-        >
-          <div className="relative">
-            <EraAvatar size={56} />
-            <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-status-success border-2 border-white" />
-          </div>
-          <span className="absolute -top-8 right-0 bg-brand-navy text-white text-xs rounded-md px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-            Ask ERA AI
-          </span>
-        </button>
-      )}
+      {/* Strolling pet — visible when chat is closed */}
+      <EraPet
+        onChatOpen={() => setOpen(true)}
+        isChatOpen={open}
+        isThinking={chatMutation.isPending}
+        isSpeaking={false}
+      />
 
       {/* Chat panel */}
       {open && (
@@ -99,7 +88,7 @@ export function EraChatWidget() {
             <div className="flex-1">
               <p className="text-sm font-semibold text-white">ERA AI</p>
               <p className="text-[10px] text-slate-400">
-                {chatMutation.isPending ? "Thinking..." : "Online"}
+                {chatMutation.isPending ? "Thinking..." : "Online — real project data"}
               </p>
             </div>
             <button
@@ -115,10 +104,9 @@ export function EraChatWidget() {
 
           {/* Messages */}
           <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
-            {/* Proactive suggestions banner */}
             {suggestionsData && suggestionsData.length > 0 && messages.length <= 1 && (
               <div className="bg-amber-50 border border-amber-200 rounded-md p-2">
-                <p className="text-[10px] text-amber-600 font-medium mb-1">Suggestions:</p>
+                <p className="text-[10px] text-amber-600 font-medium mb-1">Alerts:</p>
                 {suggestionsData.map((s, i) => (
                   <button key={i} onClick={() => handleSend(s)}
                     className="block text-xs text-amber-700 hover:underline text-left">
@@ -130,17 +118,27 @@ export function EraChatWidget() {
 
             {messages.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[80%] ${
+                <div className={`max-w-[85%] ${
                   msg.role === "user"
                     ? "bg-brand-blue text-white rounded-2xl rounded-br-md px-3 py-2"
                     : "bg-surface-tertiary text-text-primary rounded-2xl rounded-bl-md px-3 py-2"
                 }`}>
-                  <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                  <div className="text-sm whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{
+                      __html: msg.text
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/\n/g, '<br/>'),
+                    }}
+                  />
                   {msg.suggestions && msg.suggestions.length > 0 && (
                     <div className="flex flex-wrap gap-1 mt-2">
                       {msg.suggestions.map((s, j) => (
                         <button key={j} onClick={() => handleSend(s)}
-                          className="rounded-full bg-white/20 border border-white/10 px-2 py-0.5 text-[10px] hover:bg-white/30 transition-colors">
+                          className={`rounded-full border px-2 py-0.5 text-[10px] transition-colors ${
+                            msg.role === "user"
+                              ? "border-white/20 hover:bg-white/20"
+                              : "border-slate-200 bg-white hover:bg-slate-50 text-text-secondary"
+                          }`}>
                           {s}
                         </button>
                       ))}
@@ -183,7 +181,7 @@ export function EraChatWidget() {
               aria-label="Send"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19V5m0 0l-7 7m7-7l7 7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </button>
           </form>

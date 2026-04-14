@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 # ── Requests ────────────────────────────────────────────────
 
 class RegisterRequest(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     email: EmailStr
     password: str = Field(..., min_length=12, max_length=128)
@@ -18,7 +18,7 @@ class RegisterRequest(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     email: EmailStr
     password: str = Field(..., min_length=1, max_length=128)
@@ -27,24 +27,24 @@ class LoginRequest(BaseModel):
 
 
 class RefreshRequest(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     refresh_token: str
 
 
 class MFASetupRequest(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
     pass  # No body needed — generates for current user
 
 
 class MFAVerifyRequest(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     code: str = Field(..., min_length=6, max_length=6, pattern=r"^\d{6}$")
 
 
 class LogoutRequest(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     refresh_token: str | None = None
 

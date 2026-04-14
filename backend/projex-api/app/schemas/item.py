@@ -9,7 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 # ── Work Items ──────────────────────────────────────────────
 
 class ItemCreate(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     title: str = Field(..., min_length=1, max_length=500)
     type: str = Field(default="task", pattern=r"^(epic|story|task|bug|sub_task|cr)$")
@@ -26,7 +26,7 @@ class ItemCreate(BaseModel):
 
 
 class ItemUpdate(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     title: str | None = Field(default=None, min_length=1, max_length=500)
     description: dict | None = None
@@ -62,7 +62,7 @@ class ItemResponse(BaseModel):
 
 
 class ItemMoveRequest(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     status_id: UUID
     position: int = 0
@@ -72,7 +72,7 @@ class ItemMoveRequest(BaseModel):
 # ── Comments ────────────────────────────────────────────────
 
 class CommentCreate(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     body: dict  # TipTap JSON
     parent_id: UUID | None = None
@@ -92,7 +92,7 @@ class CommentResponse(BaseModel):
 # ── Worklogs ────────────────────────────────────────────────
 
 class WorklogCreate(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     time_spent_seconds: int = Field(..., gt=0)
     description: str | None = Field(default=None, max_length=1000)

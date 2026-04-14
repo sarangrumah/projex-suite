@@ -12,7 +12,7 @@ VALID_TYPES = ("text", "textarea", "number", "date", "select", "multi_select",
 
 
 class CustomFieldCreate(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     name: str = Field(..., min_length=1, max_length=127)
     field_type: str = Field(..., pattern=r"^(text|textarea|number|date|select|multi_select|checkbox|url|user|formula|rollup)$")
@@ -26,7 +26,7 @@ class CustomFieldCreate(BaseModel):
 
 
 class CustomFieldUpdate(BaseModel):
-    model_config = ConfigDict(strict=True)
+    model_config = ConfigDict()
 
     name: str | None = Field(default=None, min_length=1, max_length=127)
     description: str | None = Field(default=None, max_length=500)

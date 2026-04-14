@@ -7,6 +7,7 @@ import { useAuthStore } from "@/stores/authStore";
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const SpacesPage = lazy(() => import("@/pages/SpacesPage"));
 const BoardPage = lazy(() => import("@/pages/BoardPage"));
+const WikiPage = lazy(() => import("@/pages/WikiPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 
@@ -64,6 +65,14 @@ export function App() {
               element={
                 <ProtectedRoute>
                   <BoardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/spaces/:spaceKey/wiki"
+              element={
+                <ProtectedRoute>
+                  <WikiPage />
                 </ProtectedRoute>
               }
             />

@@ -62,10 +62,9 @@ export default function SpacesPage() {
       {data && data.data.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {data.data.map((space) => (
-            <Link
+            <div
               key={space.id}
-              to={`/spaces/${space.key}/board`}
-              className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md hover:border-brand-sky transition-all"
+              className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm hover:shadow-md transition-all"
             >
               <div className="flex items-center gap-2 mb-2">
                 <span className="w-8 h-8 rounded bg-brand-blue/10 flex items-center justify-center text-xs font-mono font-bold text-brand-blue">
@@ -76,7 +75,7 @@ export default function SpacesPage() {
               {space.description && (
                 <p className="text-xs text-text-muted line-clamp-2 mb-2">{space.description}</p>
               )}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-3">
                 <span className="inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-blue">
                   {space.template}
                 </span>
@@ -85,7 +84,21 @@ export default function SpacesPage() {
                   {space.status}
                 </span>
               </div>
-            </Link>
+              <div className="flex gap-2 border-t border-slate-100 pt-2">
+                <Link
+                  to={`/spaces/${space.key}/board`}
+                  className="text-xs font-medium text-brand-blue hover:underline"
+                >
+                  Board
+                </Link>
+                <Link
+                  to={`/spaces/${space.key}/wiki`}
+                  className="text-xs font-medium text-brand-blue hover:underline"
+                >
+                  Wiki
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
       )}

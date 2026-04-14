@@ -11,10 +11,12 @@ from app.models.comment import Comment
 from app.models.worklog import Worklog
 from app.models.audit import AuditEvent
 from app.models.custom_field import CustomFieldDefinition
+from app.models.wiki import WikiPage, WikiPageVersion
 
 __all__ = [
     "Tenant", "User", "Role",
     "Space", "Workflow", "WorkflowStatus", "Sprint",
     "WorkItem", "Comment", "Worklog",
     "AuditEvent", "CustomFieldDefinition",
+    "WikiPage", "WikiPageVersion",
 ]

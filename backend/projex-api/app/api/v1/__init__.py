@@ -18,6 +18,8 @@ from app.api.v1.search import router as search_router
 from app.api.v1.sprints import router as sprints_router
 from app.api.v1.users import router as users_router
 from app.api.v1.system import router as system_router
+from app.api.v1.files import router as files_router
+from app.api.v1.links import router as links_router
 
 router = APIRouter()
 
@@ -37,3 +39,5 @@ router.include_router(search_router)
 router.include_router(sprints_router)
 router.include_router(users_router)
 router.include_router(system_router)
+router.include_router(files_router)
+router.include_router(links_router)

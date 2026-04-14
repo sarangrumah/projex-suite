@@ -17,6 +17,8 @@ from app.models.goal import Goal, KeyResult
 from app.models.dashboard import Dashboard, DashboardWidget
 from app.models.catalog import CatalogProduct, CatalogDocument, CatalogDocVersion, CatalogRepository
 from app.models.notification import Notification
+from app.models.file import File
+from app.models.work_item_link import WorkItemLink
 
 __all__ = [
     "Tenant", "User", "Role",
@@ -29,4 +31,5 @@ __all__ = [
     "Dashboard", "DashboardWidget",
     "CatalogProduct", "CatalogDocument", "CatalogDocVersion", "CatalogRepository",
     "Notification",
+    "File", "WorkItemLink",
 ]

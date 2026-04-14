@@ -12,6 +12,8 @@ const WikiPage = lazy(() => import("@/pages/WikiPage"));
 const BudgetPage = lazy(() => import("@/pages/BudgetPage"));
 const GoalsPage = lazy(() => import("@/pages/GoalsPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+const SprintsPage = lazy(() => import("@/pages/SprintsPage"));
+const UsersPage = lazy(() => import("@/pages/UsersPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 
@@ -78,7 +80,16 @@ export function App() {
               <Route path="wiki" element={<WikiPage />} />
               <Route path="budget" element={<BudgetPage />} />
               <Route path="goals" element={<GoalsPage />} />
+              <Route path="sprints" element={<SprintsPage />} />
             </Route>
+            <Route
+              path="/admin/users"
+              element={
+                <ProtectedRoute>
+                  <UsersPage />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
         </Suspense>
       </main>

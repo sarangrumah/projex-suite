@@ -40,7 +40,7 @@ services:
     networks:
       - frontend
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://localhost:3000"]
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:3000"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -206,7 +206,7 @@ services:
       - frontend
       - backend
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://localhost:8400/health"]
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:8400/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -294,7 +294,7 @@ services:
     networks:
       - db-net
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://localhost:7700/health"]
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:7700/health"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -382,7 +382,7 @@ services:
       - monitoring
       - backend
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://localhost:9090/-/healthy"]
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:9090/-/healthy"]
       interval: 30s
       timeout: 5s
       retries: 3
@@ -407,7 +407,7 @@ services:
     networks:
       - monitoring
     healthcheck:
-      test: ["CMD", "wget", "-q", "-O-", "http://localhost:3000/api/health"]
+      test: ["CMD", "wget", "-q", "-O-", "http://127.0.0.1:3000/api/health"]
       interval: 30s
       timeout: 5s
       retries: 3

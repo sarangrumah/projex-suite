@@ -10,10 +10,11 @@ from app.models.work_item import WorkItem
 from app.models.comment import Comment
 from app.models.worklog import Worklog
 from app.models.audit import AuditEvent
+from app.models.custom_field import CustomFieldDefinition
 
 __all__ = [
     "Tenant", "User", "Role",
     "Space", "Workflow", "WorkflowStatus", "Sprint",
     "WorkItem", "Comment", "Worklog",
-    "AuditEvent",
+    "AuditEvent", "CustomFieldDefinition",
 ]

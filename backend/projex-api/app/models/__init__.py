@@ -12,6 +12,7 @@ from app.models.worklog import Worklog
 from app.models.audit import AuditEvent
 from app.models.custom_field import CustomFieldDefinition
 from app.models.wiki import WikiPage, WikiPageVersion
+from app.models.budget import Budget, BudgetLineItem, Invoice
 
 __all__ = [
     "Tenant", "User", "Role",
@@ -19,4 +20,5 @@ __all__ = [
     "WorkItem", "Comment", "Worklog",
     "AuditEvent", "CustomFieldDefinition",
     "WikiPage", "WikiPageVersion",
+    "Budget", "BudgetLineItem", "Invoice",
 ]

@@ -7,6 +7,7 @@ export function SpaceTabs() {
   const tabs = [
     { path: `/spaces/${spaceKey}/board`, label: "Board" },
     { path: `/spaces/${spaceKey}/wiki`, label: "Wiki" },
+    { path: `/spaces/${spaceKey}/budget`, label: "Budget" },
   ];
 
   return (

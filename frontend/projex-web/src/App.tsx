@@ -9,6 +9,7 @@ const HomePage = lazy(() => import("@/pages/HomePage"));
 const SpacesPage = lazy(() => import("@/pages/SpacesPage"));
 const BoardPage = lazy(() => import("@/pages/BoardPage"));
 const WikiPage = lazy(() => import("@/pages/WikiPage"));
+const BudgetPage = lazy(() => import("@/pages/BudgetPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 
@@ -72,6 +73,7 @@ export function App() {
             <Route path="/spaces/:spaceKey" element={<SpaceLayout />}>
               <Route path="board" element={<BoardPage />} />
               <Route path="wiki" element={<WikiPage />} />
+              <Route path="budget" element={<BudgetPage />} />
             </Route>
           </Routes>
         </Suspense>

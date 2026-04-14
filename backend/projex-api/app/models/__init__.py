@@ -16,6 +16,7 @@ from app.models.budget import Budget, BudgetLineItem, Invoice
 from app.models.goal import Goal, KeyResult
 from app.models.dashboard import Dashboard, DashboardWidget
 from app.models.catalog import CatalogProduct, CatalogDocument, CatalogDocVersion, CatalogRepository
+from app.models.notification import Notification
 
 __all__ = [
     "Tenant", "User", "Role",
@@ -27,4 +28,5 @@ __all__ = [
     "Goal", "KeyResult",
     "Dashboard", "DashboardWidget",
     "CatalogProduct", "CatalogDocument", "CatalogDocVersion", "CatalogRepository",
+    "Notification",
 ]

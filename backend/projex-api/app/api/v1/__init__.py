@@ -13,6 +13,11 @@ from app.api.v1.budgets import router as budgets_router
 from app.api.v1.goals import router as goals_router
 from app.api.v1.dashboards import router as dashboards_router
 from app.api.v1.catalog import router as catalog_router
+from app.api.v1.notifications import router as notifications_router
+from app.api.v1.search import router as search_router
+from app.api.v1.sprints import router as sprints_router
+from app.api.v1.users import router as users_router
+from app.api.v1.system import router as system_router
 
 router = APIRouter()
 
@@ -27,3 +32,8 @@ router.include_router(budgets_router)
 router.include_router(goals_router)
 router.include_router(dashboards_router)
 router.include_router(catalog_router)
+router.include_router(notifications_router)
+router.include_router(search_router)
+router.include_router(sprints_router)
+router.include_router(users_router)
+router.include_router(system_router)

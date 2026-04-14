@@ -26,6 +26,17 @@
 		reverse_proxy projex-api:8000
 	}
 
+	# API docs (Swagger UI + OpenAPI spec)
+	handle /docs {
+		reverse_proxy projex-api:8000
+	}
+	handle /redoc {
+		reverse_proxy projex-api:8000
+	}
+	handle /openapi.json {
+		reverse_proxy projex-api:8000
+	}
+
 	# WebSocket collaboration
 	handle /ws/collab/* {
 		reverse_proxy collab-server:8400

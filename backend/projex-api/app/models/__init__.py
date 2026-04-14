@@ -14,6 +14,7 @@ from app.models.custom_field import CustomFieldDefinition
 from app.models.wiki import WikiPage, WikiPageVersion
 from app.models.budget import Budget, BudgetLineItem, Invoice
 from app.models.goal import Goal, KeyResult
+from app.models.dashboard import Dashboard, DashboardWidget
 
 __all__ = [
     "Tenant", "User", "Role",
@@ -23,4 +24,5 @@ __all__ = [
     "WikiPage", "WikiPageVersion",
     "Budget", "BudgetLineItem", "Invoice",
     "Goal", "KeyResult",
+    "Dashboard", "DashboardWidget",
 ]

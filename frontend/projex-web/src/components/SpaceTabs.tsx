@@ -5,6 +5,7 @@ export function SpaceTabs() {
   if (!spaceKey) return null;
 
   const tabs = [
+    { path: `/spaces/${spaceKey}/dashboard`, label: "Dashboard" },
     { path: `/spaces/${spaceKey}/board`, label: "Board" },
     { path: `/spaces/${spaceKey}/wiki`, label: "Wiki" },
     { path: `/spaces/${spaceKey}/budget`, label: "Budget" },

@@ -11,6 +11,7 @@ const BoardPage = lazy(() => import("@/pages/BoardPage"));
 const WikiPage = lazy(() => import("@/pages/WikiPage"));
 const BudgetPage = lazy(() => import("@/pages/BudgetPage"));
 const GoalsPage = lazy(() => import("@/pages/GoalsPage"));
+const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 
@@ -72,6 +73,7 @@ export function App() {
               }
             />
             <Route path="/spaces/:spaceKey" element={<SpaceLayout />}>
+              <Route path="dashboard" element={<DashboardPage />} />
               <Route path="board" element={<BoardPage />} />
               <Route path="wiki" element={<WikiPage />} />
               <Route path="budget" element={<BudgetPage />} />

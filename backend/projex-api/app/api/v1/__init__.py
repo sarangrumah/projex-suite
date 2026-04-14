@@ -11,6 +11,7 @@ from app.api.v1.custom_fields import router as custom_fields_router
 from app.api.v1.wiki import router as wiki_router
 from app.api.v1.budgets import router as budgets_router
 from app.api.v1.goals import router as goals_router
+from app.api.v1.dashboards import router as dashboards_router
 
 router = APIRouter()
 
@@ -23,3 +24,4 @@ router.include_router(custom_fields_router)
 router.include_router(wiki_router)
 router.include_router(budgets_router)
 router.include_router(goals_router)
+router.include_router(dashboards_router)
